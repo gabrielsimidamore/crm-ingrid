@@ -11,31 +11,49 @@ export function useNotifications(userId?: string) {
   useEffect(() => {
     fetchNotifications()
 
-    const channel = supabase
-      .channel('notifications')
-      .on('postgres_changes', {
-        event: 'INSERT',
-        schema: 'public',
-        table: 'notifications',
-        filter: `user_id=eq.${targetId}`,
-      }, (payload) => {
-        setNotifications(prev => [payload.new as Notification, ...prev])
-      })
-      .subscribe()
+    let channel: ReturnType<typeof supabase.channel> | null = null
 
-    return () => { supabase.removeChannel(channel) }
+    try {
+      channel = supabase
+        .channel('notifications')
+        .on('postgres_changes', {
+          event: 'INSERT',
+          schema: 'public',
+          table: 'notifications',
+          filter: `user_id=eq.${targetId}`,
+        }, (payload) => {
+          setNotifications(prev => [payload.new as Notification, ...prev])
+        })
+        .subscribe((status) => {
+          if (status === 'CHANNEL_ERROR') {
+            console.warn('Realtime notifications unavailable, using polling only.')
+          }
+        })
+    } catch (err) {
+      console.warn('Realtime not available:', err)
+    }
+
+    return () => {
+      if (channel) supabase.removeChannel(channel)
+    }
   }, [targetId])
 
   async function fetchNotifications() {
     setLoading(true)
-    const { data } = await supabase
-      .from('notifications')
-      .select('*')
-      .eq('user_id', targetId)
-      .order('created_at', { ascending: false })
-      .limit(50)
-    setNotifications(data || [])
-    setLoading(false)
+    try {
+      const { data } = await supabase
+        .from('notifications')
+        .select('*')
+        .eq('user_id', targetId)
+        .order('created_at', { ascending: false })
+        .limit(50)
+      setNotifications(data || [])
+    } catch (err) {
+      console.warn('Could not fetch notifications:', err)
+      setNotifications([])
+    } finally {
+      setLoading(false)
+    }
   }
 
   async function markAsRead(id: string) {
