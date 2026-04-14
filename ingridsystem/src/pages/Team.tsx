@@ -1,14 +1,12 @@
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useTeam } from '../hooks/useTeam'
-import { useClients } from '../hooks/useClients'
 import type { TeamMember, Partnership } from '../types'
 import { Button } from '../components/ui/Button'
 import { Modal } from '../components/ui/Modal'
 import { Input, Textarea, Select } from '../components/ui/Input'
-import { Badge } from '../components/ui/Badge'
 import {
-  Plus, Users, UserPlus, Handshake, Mail, Phone, AtSign,
+  Plus, Users, Handshake, Mail, Phone, AtSign,
   Edit2, Trash2, Link, DollarSign, Star, Briefcase, Crown
 } from 'lucide-react'
 
@@ -42,7 +40,7 @@ function MemberCard({ member, onEdit }: { member: TeamMember; onEdit: () => void
             {member.specialty && <p className="text-xs text-[#8a93a8]">{member.specialty}</p>}
           </div>
         </div>
-        <button onClick={onEdit} className="w-7 h-7 rounded-lg flex items-center justify-center text-[#8a93a8] hover:text-[#e8a87c] hover:bg-[rgba(232,168,124,0.1)] transition-colors opacity-0 group-hover:opacity-100">
+        <button onClick={onEdit} aria-label="Editar membro" className="w-8 h-8 rounded-lg flex items-center justify-center text-[#8a93a8] hover:text-[#e8a87c] hover:bg-[rgba(232,168,124,0.1)] transition-colors opacity-0 group-hover:opacity-100">
           <Edit2 className="w-3.5 h-3.5" />
         </button>
       </div>
@@ -99,10 +97,10 @@ function PartnerCard({ partner, onEdit, onDelete }: {
           </div>
         </div>
         <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-          <button onClick={onEdit} className="w-7 h-7 rounded-lg flex items-center justify-center text-[#8a93a8] hover:text-[#e8a87c] hover:bg-[rgba(232,168,124,0.1)] transition-colors">
+          <button onClick={onEdit} aria-label="Editar parceiro" className="w-8 h-8 rounded-lg flex items-center justify-center text-[#8a93a8] hover:text-[#e8a87c] hover:bg-[rgba(232,168,124,0.1)] transition-colors">
             <Edit2 className="w-3.5 h-3.5" />
           </button>
-          <button onClick={onDelete} className="w-7 h-7 rounded-lg flex items-center justify-center text-[#8a93a8] hover:text-[#f87171] hover:bg-[rgba(248,113,113,0.1)] transition-colors">
+          <button onClick={onDelete} aria-label="Remover parceiro" className="w-8 h-8 rounded-lg flex items-center justify-center text-[#8a93a8] hover:text-[#f87171] hover:bg-[rgba(248,113,113,0.1)] transition-colors">
             <Trash2 className="w-3.5 h-3.5" />
           </button>
         </div>
@@ -214,7 +212,7 @@ function PartnerForm({ initial, onSubmit, loading }: {
 }
 
 export default function Team() {
-  const { members, partnerships, loading, createMember, updateMember, createPartnership, updatePartnership } = useTeam()
+  const { members, partnerships, createMember, updateMember, createPartnership, updatePartnership } = useTeam()
   const [tab, setTab] = useState<'team' | 'partners'>('team')
   const [modal, setModal] = useState<'member-create' | 'member-edit' | 'partner-create' | 'partner-edit' | null>(null)
   const [selected, setSelected] = useState<any>(null)

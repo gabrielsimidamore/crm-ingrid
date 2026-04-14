@@ -164,3 +164,22 @@ body {
 .recharts-text { fill: #8a93a8 !important; font-family: 'Plus Jakarta Sans', sans-serif !important; font-size: 12px !important; }
 .recharts-cartesian-grid-horizontal line, .recharts-cartesian-grid-vertical line { stroke: rgba(26,37,64,0.6) !important; }
 .recharts-tooltip-wrapper { outline: none !important; }
+
+/* Tabular numbers for financial data */
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum";
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  .pulse-dot { animation: none !important; }
+  .skeleton { animation: none !important; background: #1a2540; }
+  .shine::before { display: none; }
+}

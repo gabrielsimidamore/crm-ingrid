@@ -400,8 +400,8 @@ export default function Dashboard() {
                 </span>
               )}
             </div>
-            <button onClick={openGoalCreate}
-              className="w-7 h-7 rounded-lg flex items-center justify-center text-[#8a93a8] hover:text-[#4ade80] hover:bg-[rgba(74,222,128,0.1)] transition-colors">
+            <button onClick={openGoalCreate} aria-label="Nova meta"
+              className="w-8 h-8 rounded-lg flex items-center justify-center text-[#8a93a8] hover:text-[#4ade80] hover:bg-[rgba(74,222,128,0.1)] transition-colors">
               <Plus className="w-4 h-4" />
             </button>
           </div>
@@ -476,8 +476,8 @@ export default function Dashboard() {
                 </span>
               )}
             </div>
-            <button onClick={openIdeaCreate}
-              className="w-7 h-7 rounded-lg flex items-center justify-center text-[#8a93a8] hover:text-[#fbbf24] hover:bg-[rgba(251,191,36,0.1)] transition-colors">
+            <button onClick={openIdeaCreate} aria-label="Nova ideia"
+              className="w-8 h-8 rounded-lg flex items-center justify-center text-[#8a93a8] hover:text-[#fbbf24] hover:bg-[rgba(251,191,36,0.1)] transition-colors">
               <Plus className="w-4 h-4" />
             </button>
           </div>

@@ -161,13 +161,13 @@ function ClientDetailModal({ client, onEdit, onClose }: { client: Client; onEdit
       <div className="grid grid-cols-2 gap-3">
         <div className="p-4 rounded-xl border border-[#1a2540]" style={{ background: 'rgba(232,168,124,0.05)' }}>
           <div className="text-xs text-[#8a93a8] mb-1">Mensalidade</div>
-          <div className="text-xl font-bold text-[#e8a87c]">
+          <div className="text-xl font-bold text-[#e8a87c] tabular-nums">
             R$ {Number(client.monthly_value).toLocaleString('pt-BR', { minimumFractionDigits: 0 })}
           </div>
         </div>
         <div className="p-4 rounded-xl border border-[#1a2540]" style={{ background: 'rgba(124,106,247,0.05)' }}>
           <div className="text-xs text-[#8a93a8] mb-1">Budget Ads</div>
-          <div className="text-xl font-bold text-[#7c6af7]">
+          <div className="text-xl font-bold text-[#7c6af7] tabular-nums">
             R$ {Number(client.ads_budget).toLocaleString('pt-BR', { minimumFractionDigits: 0 })}
           </div>
         </div>
@@ -244,12 +244,12 @@ function ClientCard({ client, onClick, onEdit, onDelete }: {
           </div>
         </div>
         <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity" onClick={e => e.stopPropagation()}>
-          <button onClick={e => { e.stopPropagation(); onEdit() }}
-            className="w-7 h-7 rounded-lg flex items-center justify-center text-[#8a93a8] hover:text-[#e8a87c] hover:bg-[rgba(232,168,124,0.1)] transition-colors">
+          <button onClick={e => { e.stopPropagation(); onEdit() }} aria-label={`Editar ${client.name}`}
+            className="w-8 h-8 rounded-lg flex items-center justify-center text-[#8a93a8] hover:text-[#e8a87c] hover:bg-[rgba(232,168,124,0.1)] transition-colors">
             <Edit2 className="w-3.5 h-3.5" />
           </button>
-          <button onClick={e => { e.stopPropagation(); onDelete() }}
-            className="w-7 h-7 rounded-lg flex items-center justify-center text-[#8a93a8] hover:text-[#f87171] hover:bg-[rgba(248,113,113,0.1)] transition-colors">
+          <button onClick={e => { e.stopPropagation(); onDelete() }} aria-label={`Remover ${client.name}`}
+            className="w-8 h-8 rounded-lg flex items-center justify-center text-[#8a93a8] hover:text-[#f87171] hover:bg-[rgba(248,113,113,0.1)] transition-colors">
             <Trash2 className="w-3.5 h-3.5" />
           </button>
         </div>
@@ -303,11 +303,11 @@ function ClientCard({ client, onClick, onEdit, onDelete }: {
       <div className="h-px bg-gradient-to-r from-transparent via-[#1a2540] to-transparent mb-3" />
       <div className="grid grid-cols-2 gap-2">
         <div className="text-center p-2 rounded-lg" style={{ background: 'rgba(232,168,124,0.06)' }}>
-          <div className="text-sm font-bold text-[#e8a87c]">R$ {Number(client.monthly_value).toLocaleString('pt-BR', { minimumFractionDigits: 0 })}</div>
+          <div className="text-sm font-bold text-[#e8a87c] tabular-nums">R$ {Number(client.monthly_value).toLocaleString('pt-BR', { minimumFractionDigits: 0 })}</div>
           <div className="text-[10px] text-[#8a93a8] mt-0.5">Mensalidade</div>
         </div>
         <div className="text-center p-2 rounded-lg" style={{ background: 'rgba(124,106,247,0.06)' }}>
-          <div className="text-sm font-bold text-[#7c6af7]">R$ {Number(client.ads_budget).toLocaleString('pt-BR', { minimumFractionDigits: 0 })}</div>
+          <div className="text-sm font-bold text-[#7c6af7] tabular-nums">R$ {Number(client.ads_budget).toLocaleString('pt-BR', { minimumFractionDigits: 0 })}</div>
           <div className="text-[10px] text-[#8a93a8] mt-0.5">Budget Ads</div>
         </div>
       </div>

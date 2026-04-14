@@ -6,10 +6,9 @@ import type { Campaign } from '../types'
 import { Button } from '../components/ui/Button'
 import { Modal } from '../components/ui/Modal'
 import { Input, Textarea, Select } from '../components/ui/Input'
-import { Badge } from '../components/ui/Badge'
 import {
-  Plus, Search, Megaphone, TrendingUp, MousePointer, Eye,
-  DollarSign, Target, BarChart3, Edit2, Trash2, Zap, Globe
+  Plus, Search, Megaphone, TrendingUp, MousePointer,
+  DollarSign, Target, Edit2, Trash2, Zap, Globe
 } from 'lucide-react'
 import { format } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
@@ -88,10 +87,10 @@ function CampaignCard({ campaign, onEdit, onDelete }: {
           </div>
         </div>
         <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-          <button onClick={onEdit} className="w-7 h-7 rounded-lg flex items-center justify-center text-[#8a93a8] hover:text-[#e8a87c] hover:bg-[rgba(232,168,124,0.1)] transition-colors">
+          <button onClick={onEdit} aria-label="Editar campanha" className="w-8 h-8 rounded-lg flex items-center justify-center text-[#8a93a8] hover:text-[#e8a87c] hover:bg-[rgba(232,168,124,0.1)] transition-colors">
             <Edit2 className="w-3.5 h-3.5" />
           </button>
-          <button onClick={onDelete} className="w-7 h-7 rounded-lg flex items-center justify-center text-[#8a93a8] hover:text-[#f87171] hover:bg-[rgba(248,113,113,0.1)] transition-colors">
+          <button onClick={onDelete} aria-label="Remover campanha" className="w-8 h-8 rounded-lg flex items-center justify-center text-[#8a93a8] hover:text-[#f87171] hover:bg-[rgba(248,113,113,0.1)] transition-colors">
             <Trash2 className="w-3.5 h-3.5" />
           </button>
         </div>
@@ -244,9 +243,6 @@ export default function Campaigns() {
             <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Buscar campanha..."
               className="input-base pl-10 w-48 h-9 text-sm" />
           </div>
-          {[
-            { value: 'all', options: false, label: 'Todas plataformas' },
-          ].map((_, i) => null)}
           <select value={filterPlatform} onChange={e => setFilterPlatform(e.target.value)} className="input-base h-9 text-sm w-44">
             <option value="all">Todas plataformas</option>
             <option value="meta">Meta Ads</option>

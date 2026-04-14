@@ -9,11 +9,10 @@ import { Modal } from '../components/ui/Modal'
 import { Input, Textarea, Select } from '../components/ui/Input'
 import { PriorityBadge, TaskStatusBadge } from '../components/ui/Badge'
 import {
-  Plus, Search, CheckSquare, Clock, User, Tag, Paperclip,
-  CheckCircle2, Circle, AlertTriangle, Trash2, Edit2, Calendar,
-  ChevronDown, X, MoreVertical
+  Plus, Search, CheckSquare, Clock, User, Paperclip,
+  CheckCircle2, AlertTriangle, Trash2, Edit2, Calendar, X
 } from 'lucide-react'
-import { format, isAfter, isBefore, addDays } from 'date-fns'
+import { format, isAfter } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
 import toast from 'react-hot-toast'
 
@@ -101,10 +100,10 @@ function TaskItem({ task, onEdit, onDelete, onToggle }: {
 
         {/* Actions */}
         <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0">
-          <button onClick={onEdit} className="w-7 h-7 rounded-lg flex items-center justify-center text-[#8a93a8] hover:text-[#e8a87c] hover:bg-[rgba(232,168,124,0.1)] transition-colors">
+          <button onClick={onEdit} aria-label="Editar tarefa" className="w-8 h-8 rounded-lg flex items-center justify-center text-[#8a93a8] hover:text-[#e8a87c] hover:bg-[rgba(232,168,124,0.1)] transition-colors">
             <Edit2 className="w-3.5 h-3.5" />
           </button>
-          <button onClick={onDelete} className="w-7 h-7 rounded-lg flex items-center justify-center text-[#8a93a8] hover:text-[#f87171] hover:bg-[rgba(248,113,113,0.1)] transition-colors">
+          <button onClick={onDelete} aria-label="Remover tarefa" className="w-8 h-8 rounded-lg flex items-center justify-center text-[#8a93a8] hover:text-[#f87171] hover:bg-[rgba(248,113,113,0.1)] transition-colors">
             <Trash2 className="w-3.5 h-3.5" />
           </button>
         </div>

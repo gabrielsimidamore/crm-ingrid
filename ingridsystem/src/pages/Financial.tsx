@@ -297,12 +297,12 @@ export default function Financial() {
                     R$ {cost.amount.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
                   </span>
                   <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                    <button onClick={() => { setSelectedCost(cost); setCostModal('edit') }}
-                      className="w-7 h-7 rounded-lg flex items-center justify-center text-[#8a93a8] hover:text-[#e8a87c] hover:bg-[rgba(232,168,124,0.1)] transition-colors">
+                    <button onClick={() => { setSelectedCost(cost); setCostModal('edit') }} aria-label={`Editar custo ${cost.name}`}
+                      className="w-8 h-8 rounded-lg flex items-center justify-center text-[#8a93a8] hover:text-[#e8a87c] hover:bg-[rgba(232,168,124,0.1)] transition-colors">
                       <Edit2 className="w-3.5 h-3.5" />
                     </button>
-                    <button onClick={() => handleDeleteCost(cost.id)}
-                      className="w-7 h-7 rounded-lg flex items-center justify-center text-[#8a93a8] hover:text-[#f87171] hover:bg-[rgba(248,113,113,0.1)] transition-colors">
+                    <button onClick={() => handleDeleteCost(cost.id)} aria-label={`Remover custo ${cost.name}`}
+                      className="w-8 h-8 rounded-lg flex items-center justify-center text-[#8a93a8] hover:text-[#f87171] hover:bg-[rgba(248,113,113,0.1)] transition-colors">
                       <Trash2 className="w-3.5 h-3.5" />
                     </button>
                   </div>
@@ -395,7 +395,7 @@ export default function Financial() {
                           {record.type === 'invoice' ? 'Fatura' : record.type === 'payment' ? 'Pagamento' : 'Despesa'}
                         </span>
                       </td>
-                      <td className="px-4 py-3 text-sm font-bold text-[#f0ece4]">
+                      <td className="px-4 py-3 text-sm font-bold text-[#f0ece4] tabular-nums">
                         R$ {Number(record.amount).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
                       </td>
                       <td className="px-4 py-3 text-sm text-[#8a93a8]">
@@ -405,17 +405,17 @@ export default function Financial() {
                       <td className="px-4 py-3">
                         <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                           {record.status === 'pending' && (
-                            <button onClick={() => markAsPaid(record.id)} title="Marcar como pago"
-                              className="w-7 h-7 rounded-lg flex items-center justify-center text-[#8a93a8] hover:text-[#4ade80] hover:bg-[rgba(74,222,128,0.1)] transition-colors">
+                            <button onClick={() => markAsPaid(record.id)} aria-label="Marcar como pago"
+                              className="w-8 h-8 rounded-lg flex items-center justify-center text-[#8a93a8] hover:text-[#4ade80] hover:bg-[rgba(74,222,128,0.1)] transition-colors">
                               <Check className="w-3.5 h-3.5" />
                             </button>
                           )}
-                          <button onClick={() => { setSelected(record); setModal('edit') }}
-                            className="w-7 h-7 rounded-lg flex items-center justify-center text-[#8a93a8] hover:text-[#e8a87c] hover:bg-[rgba(232,168,124,0.1)] transition-colors">
+                          <button onClick={() => { setSelected(record); setModal('edit') }} aria-label="Editar registro"
+                            className="w-8 h-8 rounded-lg flex items-center justify-center text-[#8a93a8] hover:text-[#e8a87c] hover:bg-[rgba(232,168,124,0.1)] transition-colors">
                             <Edit2 className="w-3.5 h-3.5" />
                           </button>
-                          <button onClick={() => { if (confirm('Remover?')) deleteRecord(record.id) }}
-                            className="w-7 h-7 rounded-lg flex items-center justify-center text-[#8a93a8] hover:text-[#f87171] hover:bg-[rgba(248,113,113,0.1)] transition-colors">
+                          <button onClick={() => { if (confirm('Remover?')) deleteRecord(record.id) }} aria-label="Remover registro"
+                            className="w-8 h-8 rounded-lg flex items-center justify-center text-[#8a93a8] hover:text-[#f87171] hover:bg-[rgba(248,113,113,0.1)] transition-colors">
                             <Trash2 className="w-3.5 h-3.5" />
                           </button>
                         </div>
