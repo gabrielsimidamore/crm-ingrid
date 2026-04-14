@@ -8,8 +8,10 @@ import { Input, Textarea, Select } from '../components/ui/Input'
 import { ClientStatusBadge } from '../components/ui/Badge'
 import {
   Plus, Search, Users, AtSign, Phone, Mail, DollarSign,
-  Megaphone, Edit2, Trash2
+  Megaphone, Edit2, Trash2, ExternalLink, Camera, FileText
 } from 'lucide-react'
+import { format } from 'date-fns'
+import { ptBR } from 'date-fns/locale'
 
 const SERVICE_TYPES = [
   { value: 'stories', label: 'Stories' },
@@ -46,7 +48,7 @@ function ClientForm({ initial, onSubmit, loading }: {
         <Input label="Telefone" value={form.phone || ''} onChange={e => setForm(p => ({ ...p, phone: e.target.value }))} placeholder="(11) 99999-9999" icon={<Phone className="w-4 h-4" />} />
       </div>
       <div className="grid grid-cols-2 gap-3">
-        <Input label="AtSign" value={form.instagram || ''} onChange={e => setForm(p => ({ ...p, instagram: e.target.value }))} placeholder="@perfil" icon={<AtSign className="w-4 h-4" />} />
+        <Input label="Instagram" value={form.instagram || ''} onChange={e => setForm(p => ({ ...p, instagram: e.target.value }))} placeholder="@perfil" icon={<AtSign className="w-4 h-4" />} />
         <Select label="Status" value={form.status || 'active'} onChange={e => setForm(p => ({ ...p, status: e.target.value as Client['status'] }))}
           options={[{ value: 'active', label: 'Ativo' }, { value: 'inactive', label: 'Inativo' }, { value: 'paused', label: 'Pausado' }]} />
       </div>
@@ -54,6 +56,10 @@ function ClientForm({ initial, onSubmit, loading }: {
         <Input label="Valor Mensal (R$)" type="number" value={form.monthly_value || ''} onChange={e => setForm(p => ({ ...p, monthly_value: Number(e.target.value) }))} placeholder="0,00" icon={<DollarSign className="w-4 h-4" />} />
         <Input label="Budget Ads (R$)" type="number" value={form.ads_budget || ''} onChange={e => setForm(p => ({ ...p, ads_budget: Number(e.target.value) }))} placeholder="0,00" icon={<Megaphone className="w-4 h-4" />} />
       </div>
+
+      {/* Avatar URL */}
+      <Input label="Foto / Logo (URL)" value={form.avatar_url || ''} onChange={e => setForm(p => ({ ...p, avatar_url: e.target.value }))}
+        placeholder="https://..." icon={<Camera className="w-4 h-4" />} />
 
       {/* Service types */}
       <div>
@@ -84,7 +90,7 @@ function ClientForm({ initial, onSubmit, loading }: {
         </div>
       </div>
 
-      <Textarea label="Observações" value={form.notes || ''} onChange={e => setForm(p => ({ ...p, notes: e.target.value }))} rows={2} placeholder="Observações sobre o cliente..." />
+      <Textarea label="Observações / Descrição" value={form.notes || ''} onChange={e => setForm(p => ({ ...p, notes: e.target.value }))} rows={3} placeholder="Descrição do cliente, contexto do trabalho, observações importantes..." />
 
       <Button type="submit" loading={loading} fullWidth>
         {initial?.id ? 'Salvar alterações' : 'Criar cliente'}
@@ -93,7 +99,121 @@ function ClientForm({ initial, onSubmit, loading }: {
   )
 }
 
-function ClientCard({ client, onEdit, onDelete }: { client: Client; onEdit: () => void; onDelete: () => void }) {
+function ClientDetailModal({ client, onEdit, onClose }: { client: Client; onEdit: () => void; onClose: () => void }) {
+  return (
+    <div className="space-y-5">
+      {/* Avatar / hero */}
+      <div className="relative rounded-2xl overflow-hidden"
+        style={{ background: `linear-gradient(135deg, ${client.color}20, ${client.color}08)`, border: `1px solid ${client.color}30` }}>
+        <div className="p-6 flex items-center gap-5">
+          {client.avatar_url ? (
+            <img src={client.avatar_url} alt={client.name}
+              className="w-20 h-20 rounded-2xl object-cover flex-shrink-0 shadow-lg"
+              style={{ border: `2px solid ${client.color}40` }} />
+          ) : (
+            <div className="w-20 h-20 rounded-2xl flex items-center justify-center text-3xl font-bold text-[#060912] flex-shrink-0 shadow-lg"
+              style={{ background: `linear-gradient(135deg, ${client.color}, ${client.color}88)` }}>
+              {client.name.charAt(0).toUpperCase()}
+            </div>
+          )}
+          <div className="flex-1 min-w-0">
+            <h2 className="font-['Cormorant_Garamond'] text-2xl font-semibold text-[#f0ece4] leading-tight">{client.name}</h2>
+            {client.company && <p className="text-sm text-[#8a93a8] mt-0.5">{client.company}</p>}
+            <div className="flex items-center gap-2 mt-2 flex-wrap">
+              <ClientStatusBadge status={client.status} />
+              {client.service_types?.map(s => (
+                <span key={s} className="text-[10px] font-semibold px-2 py-0.5 rounded-full uppercase tracking-wider"
+                  style={{ background: `${client.color}18`, color: client.color, border: `1px solid ${client.color}35` }}>
+                  {s}
+                </span>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Contact info */}
+      <div className="grid grid-cols-2 gap-3">
+        {client.instagram && (
+          <div className="flex items-center gap-2 p-3 rounded-xl border border-[#1a2540] bg-[rgba(124,106,247,0.04)]">
+            <AtSign className="w-4 h-4 text-[#7c6af7] flex-shrink-0" />
+            <span className="text-sm text-[#c8c0b4] truncate">{client.instagram}</span>
+          </div>
+        )}
+        {client.phone && (
+          <div className="flex items-center gap-2 p-3 rounded-xl border border-[#1a2540] bg-[rgba(74,222,128,0.04)]">
+            <Phone className="w-4 h-4 text-[#4ade80] flex-shrink-0" />
+            <span className="text-sm text-[#c8c0b4]">{client.phone}</span>
+          </div>
+        )}
+        {client.email && (
+          <div className="flex items-center gap-2 p-3 rounded-xl border border-[#1a2540] bg-[rgba(96,165,250,0.04)] col-span-2">
+            <Mail className="w-4 h-4 text-[#60a5fa] flex-shrink-0" />
+            <span className="text-sm text-[#c8c0b4] truncate">{client.email}</span>
+            <a href={`mailto:${client.email}`} className="ml-auto text-[#60a5fa] hover:text-[#93c5fd]">
+              <ExternalLink className="w-3.5 h-3.5" />
+            </a>
+          </div>
+        )}
+      </div>
+
+      {/* Financials */}
+      <div className="grid grid-cols-2 gap-3">
+        <div className="p-4 rounded-xl border border-[#1a2540]" style={{ background: 'rgba(232,168,124,0.05)' }}>
+          <div className="text-xs text-[#8a93a8] mb-1">Mensalidade</div>
+          <div className="text-xl font-bold text-[#e8a87c]">
+            R$ {Number(client.monthly_value).toLocaleString('pt-BR', { minimumFractionDigits: 0 })}
+          </div>
+        </div>
+        <div className="p-4 rounded-xl border border-[#1a2540]" style={{ background: 'rgba(124,106,247,0.05)' }}>
+          <div className="text-xs text-[#8a93a8] mb-1">Budget Ads</div>
+          <div className="text-xl font-bold text-[#7c6af7]">
+            R$ {Number(client.ads_budget).toLocaleString('pt-BR', { minimumFractionDigits: 0 })}
+          </div>
+        </div>
+      </div>
+
+      {/* Notes / Description */}
+      {client.notes && (
+        <div>
+          <div className="flex items-center gap-2 mb-2">
+            <FileText className="w-4 h-4 text-[#8a93a8]" />
+            <p className="text-xs text-[#8a93a8] uppercase tracking-wider font-semibold">Observações</p>
+          </div>
+          <p className="text-sm text-[#c8c0b4] leading-relaxed bg-[rgba(255,255,255,0.02)] p-4 rounded-xl border border-[#1a2540]">
+            {client.notes}
+          </p>
+        </div>
+      )}
+
+      {/* Contract dates */}
+      {(client.contract_start || client.contract_end) && (
+        <div className="flex gap-4 text-sm text-[#8a93a8]">
+          {client.contract_start && (
+            <span>Início: <strong className="text-[#f0ece4]">{format(new Date(client.contract_start), 'dd/MM/yyyy', { locale: ptBR })}</strong></span>
+          )}
+          {client.contract_end && (
+            <span>Fim: <strong className="text-[#f0ece4]">{format(new Date(client.contract_end), 'dd/MM/yyyy', { locale: ptBR })}</strong></span>
+          )}
+        </div>
+      )}
+
+      {/* Actions */}
+      <div className="flex gap-2 pt-2 border-t border-[#1a2540]">
+        <Button onClick={onEdit} icon={<Edit2 className="w-4 h-4" />} fullWidth>
+          Editar Cliente
+        </Button>
+      </div>
+    </div>
+  )
+}
+
+function ClientCard({ client, onClick, onEdit, onDelete }: {
+  client: Client
+  onClick: () => void
+  onEdit: () => void
+  onDelete: () => void
+}) {
   return (
     <motion.div
       layout
@@ -102,25 +222,34 @@ function ClientCard({ client, onEdit, onDelete }: { client: Client; onEdit: () =
       exit={{ opacity: 0, scale: 0.97 }}
       whileHover={{ y: -3 }}
       transition={{ duration: 0.2 }}
-      className="bg-[#0d1424] border border-[#1a2540] rounded-2xl p-5 shine group hover:border-[rgba(232,168,124,0.2)] hover:shadow-[0_0_40px_rgba(232,168,124,0.06)] transition-all duration-300"
+      onClick={onClick}
+      className="bg-[#0d1424] border border-[#1a2540] rounded-2xl p-5 shine group hover:border-[rgba(232,168,124,0.2)] hover:shadow-[0_0_40px_rgba(232,168,124,0.06)] transition-all duration-300 cursor-pointer"
     >
       {/* Header */}
       <div className="flex items-start justify-between mb-4">
         <div className="flex items-center gap-3">
-          <div className="w-11 h-11 rounded-xl flex items-center justify-center text-[#060912] font-bold text-lg flex-shrink-0"
-            style={{ background: `linear-gradient(135deg, ${client.color}, ${client.color}88)` }}>
-            {client.name.charAt(0).toUpperCase()}
-          </div>
+          {client.avatar_url ? (
+            <img src={client.avatar_url} alt={client.name}
+              className="w-11 h-11 rounded-xl object-cover flex-shrink-0"
+              style={{ border: `1px solid ${client.color}40` }} />
+          ) : (
+            <div className="w-11 h-11 rounded-xl flex items-center justify-center text-[#060912] font-bold text-lg flex-shrink-0"
+              style={{ background: `linear-gradient(135deg, ${client.color}, ${client.color}88)` }}>
+              {client.name.charAt(0).toUpperCase()}
+            </div>
+          )}
           <div className="min-w-0">
             <h3 className="font-semibold text-[#f0ece4] text-sm leading-tight truncate">{client.name}</h3>
             {client.company && <p className="text-xs text-[#8a93a8] truncate">{client.company}</p>}
           </div>
         </div>
-        <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-          <button onClick={onEdit} className="w-7 h-7 rounded-lg flex items-center justify-center text-[#8a93a8] hover:text-[#e8a87c] hover:bg-[rgba(232,168,124,0.1)] transition-colors">
+        <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity" onClick={e => e.stopPropagation()}>
+          <button onClick={e => { e.stopPropagation(); onEdit() }}
+            className="w-7 h-7 rounded-lg flex items-center justify-center text-[#8a93a8] hover:text-[#e8a87c] hover:bg-[rgba(232,168,124,0.1)] transition-colors">
             <Edit2 className="w-3.5 h-3.5" />
           </button>
-          <button onClick={onDelete} className="w-7 h-7 rounded-lg flex items-center justify-center text-[#8a93a8] hover:text-[#f87171] hover:bg-[rgba(248,113,113,0.1)] transition-colors">
+          <button onClick={e => { e.stopPropagation(); onDelete() }}
+            className="w-7 h-7 rounded-lg flex items-center justify-center text-[#8a93a8] hover:text-[#f87171] hover:bg-[rgba(248,113,113,0.1)] transition-colors">
             <Trash2 className="w-3.5 h-3.5" />
           </button>
         </div>
@@ -165,6 +294,11 @@ function ClientCard({ client, onEdit, onDelete }: { client: Client; onEdit: () =
         )}
       </div>
 
+      {/* Notes preview */}
+      {client.notes && (
+        <p className="text-xs text-[#4a5568] line-clamp-2 mb-3 leading-relaxed">{client.notes}</p>
+      )}
+
       {/* Financials */}
       <div className="h-px bg-gradient-to-r from-transparent via-[#1a2540] to-transparent mb-3" />
       <div className="grid grid-cols-2 gap-2">
@@ -185,7 +319,7 @@ export default function Clients() {
   const { clients, loading, createClient, updateClient, deleteClient } = useClients()
   const [search, setSearch] = useState('')
   const [filter, setFilter] = useState<string>('all')
-  const [modal, setModal] = useState<'create' | 'edit' | null>(null)
+  const [modal, setModal] = useState<'create' | 'edit' | 'detail' | null>(null)
   const [selected, setSelected] = useState<Client | null>(null)
   const [saving, setSaving] = useState(false)
 
@@ -282,6 +416,7 @@ export default function Clients() {
           <motion.div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-4">
             {filtered.map(client => (
               <ClientCard key={client.id} client={client}
+                onClick={() => { setSelected(client); setModal('detail') }}
                 onEdit={() => { setSelected(client); setModal('edit') }}
                 onDelete={() => handleDelete(client)}
               />
@@ -302,8 +437,20 @@ export default function Clients() {
       <Modal open={modal === 'create'} onClose={() => setModal(null)} title="Novo Cliente" size="lg">
         <ClientForm onSubmit={handleCreate} loading={saving} />
       </Modal>
+
       <Modal open={modal === 'edit'} onClose={() => { setModal(null); setSelected(null) }} title="Editar Cliente" size="lg">
         {selected && <ClientForm initial={selected} onSubmit={handleEdit} loading={saving} />}
+      </Modal>
+
+      <Modal open={modal === 'detail'} onClose={() => { setModal(null); setSelected(null) }}
+        title="" size="lg">
+        {selected && (
+          <ClientDetailModal
+            client={selected}
+            onEdit={() => setModal('edit')}
+            onClose={() => { setModal(null); setSelected(null) }}
+          />
+        )}
       </Modal>
     </div>
   )
