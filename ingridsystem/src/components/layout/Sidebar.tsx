@@ -2,22 +2,40 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { NavLink, useLocation } from 'react-router-dom'
 import {
   LayoutDashboard, Users, Film, Megaphone, CheckSquare,
-  DollarSign, FileText, UsersRound, Share2, Bell, ChevronLeft, ChevronRight,
-  Sparkles
+  DollarSign, FileText, UsersRound, Share2, Bell,
+  ChevronLeft, ChevronRight, Sparkles
 } from 'lucide-react'
 import { cn } from '../ui/cn'
 import { useNotifications } from '../../hooks/useNotifications'
 
-const navItems = [
-  { path: '/', label: 'Dashboard', icon: LayoutDashboard, group: 'main' },
-  { path: '/clients', label: 'Clientes', icon: Users, group: 'main' },
-  { path: '/content', label: 'Conteúdo', icon: Film, group: 'main' },
-  { path: '/campaigns', label: 'Campanhas', icon: Megaphone, group: 'main' },
-  { path: '/tasks', label: 'Tarefas', icon: CheckSquare, group: 'main' },
-  { path: '/financial', label: 'Financeiro', icon: DollarSign, group: 'finance' },
-  { path: '/reports', label: 'Relatórios', icon: FileText, group: 'finance' },
-  { path: '/team', label: 'Equipe', icon: UsersRound, group: 'team' },
-  { path: '/social', label: 'Social Preview', icon: Share2, group: 'team', badge: 'BETA' },
+const navGroups = [
+  {
+    key: 'main',
+    label: 'Principal',
+    items: [
+      { path: '/',            label: 'Dashboard',     icon: LayoutDashboard },
+      { path: '/clients',     label: 'Clientes',      icon: Users           },
+      { path: '/content',     label: 'Conteúdo',      icon: Film            },
+      { path: '/campaigns',   label: 'Campanhas',     icon: Megaphone       },
+      { path: '/tasks',       label: 'Tarefas',       icon: CheckSquare     },
+    ],
+  },
+  {
+    key: 'finance',
+    label: 'Financeiro',
+    items: [
+      { path: '/financial',   label: 'Financeiro',    icon: DollarSign      },
+      { path: '/reports',     label: 'Relatórios',    icon: FileText        },
+    ],
+  },
+  {
+    key: 'team',
+    label: 'Equipe',
+    items: [
+      { path: '/team',        label: 'Equipe',        icon: UsersRound      },
+      { path: '/social',      label: 'Social Preview',icon: Share2, badge: 'BETA' },
+    ],
+  },
 ]
 
 interface SidebarProps {
@@ -29,39 +47,54 @@ export function Sidebar({ collapsed, onToggle }: SidebarProps) {
   const location = useLocation()
   const { unreadCount } = useNotifications()
 
-  const groups = {
-    main: navItems.filter(i => i.group === 'main'),
-    finance: navItems.filter(i => i.group === 'finance'),
-    team: navItems.filter(i => i.group === 'team'),
-  }
-
   return (
     <motion.aside
-      animate={{ width: collapsed ? 68 : 240 }}
-      transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
-      className="relative flex flex-col h-full bg-[#0a0f1e] border-r border-[#1a2540] overflow-hidden flex-shrink-0"
+      animate={{ width: collapsed ? 64 : 256 }}
+      transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
+      className="relative flex flex-col h-full overflow-hidden flex-shrink-0"
+      style={{
+        background: 'linear-gradient(180deg, #07091a 0%, #060912 100%)',
+        borderRight: '1px solid rgba(22, 32, 58, 0.7)',
+      }}
     >
-      {/* Logo */}
-      <div className="flex items-center h-16 px-4 border-b border-[#1a2540] flex-shrink-0">
-        <div className="flex items-center gap-3 min-w-0">
-          <div className="w-8 h-8 rounded-xl flex items-center justify-center flex-shrink-0"
-            style={{ background: 'linear-gradient(135deg, #e8a87c, #c4845a)', boxShadow: '0 0 20px rgba(232,168,124,0.3)' }}>
-            <Sparkles className="w-4 h-4 text-[#060912]" />
+      {/* Ambient glow at top */}
+      <div
+        className="absolute top-0 left-0 right-0 h-56 pointer-events-none"
+        style={{ background: 'radial-gradient(ellipse at 50% -30%, rgba(232,168,124,0.07) 0%, transparent 65%)' }}
+      />
+
+      {/* ── Logo ─────────────────────────────────────────────────────── */}
+      <div className="flex items-center h-[72px] px-5 flex-shrink-0 relative">
+        <div className="flex items-center gap-3.5 min-w-0">
+          {/* Icon mark */}
+          <div
+            className="w-9 h-9 rounded-[11px] flex items-center justify-center flex-shrink-0"
+            style={{
+              background: 'linear-gradient(135deg, #e8a87c 0%, #c4845a 100%)',
+              boxShadow: '0 0 24px rgba(232,168,124,0.35), 0 2px 10px rgba(0,0,0,0.4)',
+            }}
+          >
+            <Sparkles className="w-4 h-4 text-[#06090f]" />
           </div>
+
           <AnimatePresence>
             {!collapsed && (
               <motion.div
                 initial={{ opacity: 0, x: -10 }}
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: -10 }}
-                transition={{ duration: 0.2 }}
-                className="min-w-0"
+                transition={{ duration: 0.25, ease: 'easeOut' }}
+                className="min-w-0 select-none"
               >
-                <div className="font-['Cormorant_Garamond'] text-xl font-semibold text-[#f0ece4] leading-none">
+                <div
+                  className="text-[22px] font-light leading-none tracking-tight"
+                  style={{ fontFamily: "'Cormorant Garamond', serif", fontStyle: 'italic', color: '#f0ece4' }}
+                >
                   Ingrid
                 </div>
-                <div className="text-[10px] text-[#8a93a8] uppercase tracking-wider font-semibold">
-                  Studio CRM
+                <div className="text-[9px] uppercase tracking-[0.2em] font-semibold mt-[3px]"
+                  style={{ color: '#e8a87c', opacity: 0.75 }}>
+                  Studio · CRM
                 </div>
               </motion.div>
             )}
@@ -69,105 +102,155 @@ export function Sidebar({ collapsed, onToggle }: SidebarProps) {
         </div>
       </div>
 
-      {/* Nav */}
-      <nav className="flex-1 overflow-y-auto overflow-x-hidden py-4 px-2 space-y-5">
-        {Object.entries(groups).map(([group, items]) => (
-          <div key={group}>
-            {!collapsed && (
-              <motion.div
-                initial={false}
-                animate={{ opacity: 1 }}
-                className="text-[10px] text-[#4a5568] uppercase tracking-widest font-semibold px-3 mb-2"
-              >
-                {group === 'main' ? 'Principal' : group === 'finance' ? 'Financeiro' : 'Equipe'}
-              </motion.div>
-            )}
-            <div className="space-y-0.5">
-              {items.map(item => (
-                <NavItem
-                  key={item.path}
-                  {...item}
-                  collapsed={collapsed}
-                  isActive={location.pathname === item.path || (item.path !== '/' && location.pathname.startsWith(item.path))}
-                />
-              ))}
+      {/* Top separator */}
+      <div className="mx-4 h-px flex-shrink-0"
+        style={{ background: 'linear-gradient(90deg, transparent, rgba(26,37,64,0.6), transparent)' }} />
+
+      {/* ── Navigation ───────────────────────────────────────────────── */}
+      <nav className="flex-1 overflow-y-auto overflow-x-hidden py-3 space-y-0.5">
+        {navGroups.map((group, groupIdx) => (
+          <div key={group.key} className={cn(groupIdx > 0 && 'mt-3')}>
+            {/* Group label */}
+            {!collapsed ? (
+              <div className="flex items-center gap-2 px-5 mb-1 mt-1">
+                <div className="h-px flex-1" style={{ background: 'rgba(26,37,64,0.45)' }} />
+                <span className="text-[9px] uppercase tracking-[0.16em] font-semibold whitespace-nowrap select-none"
+                  style={{ color: 'rgba(74,85,104,0.7)' }}>
+                  {group.label}
+                </span>
+                <div className="h-px flex-1" style={{ background: 'rgba(26,37,64,0.45)' }} />
+              </div>
+            ) : groupIdx > 0 ? (
+              <div className="mx-auto w-5 h-px mb-2" style={{ background: 'rgba(26,37,64,0.5)' }} />
+            ) : null}
+
+            {/* Items */}
+            <div className="space-y-px">
+              {group.items.map(item => {
+                const isActive = location.pathname === item.path ||
+                  (item.path !== '/' && location.pathname.startsWith(item.path))
+                return (
+                  <NavItem
+                    key={item.path}
+                    path={item.path}
+                    label={item.label}
+                    icon={item.icon}
+                    badge={(item as any).badge}
+                    collapsed={collapsed}
+                    isActive={isActive}
+                  />
+                )
+              })}
             </div>
           </div>
         ))}
       </nav>
 
-      {/* Notifications link */}
-      <div className="flex-shrink-0 p-2 border-t border-[#1a2540]">
+      {/* ── Notifications ────────────────────────────────────────────── */}
+      <div className="flex-shrink-0 pb-4">
+        <div className="mx-4 h-px mb-3"
+          style={{ background: 'linear-gradient(90deg, transparent, rgba(26,37,64,0.5), transparent)' }} />
         <NavLink
           to="/notifications"
           className={({ isActive }) => cn(
-            'flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200 group relative',
+            'relative flex items-center transition-all duration-150',
+            collapsed ? 'justify-center py-2.5 px-4' : 'gap-3.5 px-5 py-2.5',
             isActive
-              ? 'bg-[rgba(232,168,124,0.12)] text-[#e8a87c]'
-              : 'text-[#8a93a8] hover:text-[#f0ece4] hover:bg-[rgba(255,255,255,0.04)]'
+              ? 'text-[#e8a87c]'
+              : 'text-[#4a5568] hover:text-[#c8c0b4] hover:bg-[rgba(255,255,255,0.015)]'
           )}
         >
-          <div className="relative flex-shrink-0">
-            <Bell className="w-4.5 h-4.5" style={{ width: '18px', height: '18px' }} />
-            {unreadCount > 0 && (
-              <span className="absolute -top-1 -right-1 w-4 h-4 bg-[#e8a87c] text-[#060912] rounded-full text-[9px] font-bold flex items-center justify-center">
-                {unreadCount > 9 ? '9+' : unreadCount}
-              </span>
-            )}
-          </div>
-          <AnimatePresence>
-            {!collapsed && (
-              <motion.span
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                className="text-sm font-medium"
-              >
-                Notificações
-              </motion.span>
-            )}
-          </AnimatePresence>
+          {({ isActive }) => (
+            <>
+              {isActive && (
+                <motion.div
+                  layoutId="activeBar"
+                  className="nav-active-bar"
+                  transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
+                />
+              )}
+              <div className="relative flex-shrink-0">
+                <Bell style={{ width: '16px', height: '16px' }} />
+                {unreadCount > 0 && (
+                  <span className="absolute -top-1 -right-1 w-3.5 h-3.5 rounded-full text-[8px] font-bold flex items-center justify-center"
+                    style={{ background: '#e8a87c', color: '#060912' }}>
+                    {unreadCount > 9 ? '9+' : unreadCount}
+                  </span>
+                )}
+              </div>
+              <AnimatePresence>
+                {!collapsed && (
+                  <motion.span
+                    initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+                    className="text-[13px] font-medium"
+                  >
+                    Notificações
+                  </motion.span>
+                )}
+              </AnimatePresence>
+            </>
+          )}
         </NavLink>
       </div>
 
-      {/* Toggle button */}
+      {/* ── Collapse toggle ──────────────────────────────────────────── */}
       <button
         onClick={onToggle}
-        className="absolute -right-3 top-[72px] w-6 h-6 bg-[#1a2540] border border-[#243050] rounded-full flex items-center justify-center text-[#8a93a8] hover:text-[#f0ece4] hover:bg-[#243050] transition-colors z-10 shadow-lg"
+        aria-label={collapsed ? 'Expandir menu' : 'Recolher menu'}
+        className="absolute -right-3 top-[80px] w-6 h-6 rounded-full flex items-center justify-center transition-all duration-200 z-10"
+        style={{
+          background: '#0a0f1e',
+          border: '1px solid rgba(26,37,64,0.9)',
+          color: '#4a5568',
+          boxShadow: '2px 0 12px rgba(0,0,0,0.5)',
+        }}
+        onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = '#e8a87c'; (e.currentTarget as HTMLElement).style.borderColor = 'rgba(232,168,124,0.3)'; }}
+        onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = '#4a5568'; (e.currentTarget as HTMLElement).style.borderColor = 'rgba(26,37,64,0.9)'; }}
       >
-        {collapsed ? <ChevronRight className="w-3 h-3" /> : <ChevronLeft className="w-3 h-3" />}
+        {collapsed
+          ? <ChevronRight className="w-3 h-3" />
+          : <ChevronLeft  className="w-3 h-3" />}
       </button>
     </motion.aside>
   )
 }
 
-function NavItem({
-  path, label, icon: Icon, collapsed, isActive, badge
-}: {
-  path: string; label: string; icon: React.ElementType; collapsed: boolean; isActive: boolean; badge?: string
-}) {
+interface NavItemProps {
+  path: string
+  label: string
+  icon: React.ElementType
+  collapsed: boolean
+  isActive: boolean
+  badge?: string
+}
+
+function NavItem({ path, label, icon: Icon, collapsed, isActive, badge }: NavItemProps) {
   return (
     <NavLink
       to={path}
       title={collapsed ? label : undefined}
       className={cn(
-        'flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200 group relative',
+        'relative flex items-center transition-all duration-150 group w-full',
+        collapsed ? 'justify-center py-2.5 px-4' : 'gap-3.5 px-5 py-2.5',
         isActive
-          ? 'bg-[rgba(232,168,124,0.12)] text-[#e8a87c] shadow-[0_0_20px_rgba(232,168,124,0.08)]'
-          : 'text-[#8a93a8] hover:text-[#f0ece4] hover:bg-[rgba(255,255,255,0.04)]'
+          ? 'text-[#e8a87c]'
+          : 'text-[#4a5568] hover:text-[#c8c0b4] hover:bg-[rgba(255,255,255,0.015)]'
       )}
     >
+      {/* Active left bar */}
       {isActive && (
         <motion.div
-          layoutId="activeNav"
-          className="absolute inset-0 rounded-xl bg-[rgba(232,168,124,0.08)] border border-[rgba(232,168,124,0.15)]"
-          transition={{ duration: 0.25 }}
+          layoutId="activeBar"
+          className="nav-active-bar"
+          transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
         />
       )}
+
       <Icon
-        className="relative z-10 flex-shrink-0"
-        style={{ width: '18px', height: '18px' }}
+        className="relative flex-shrink-0 transition-transform duration-150 group-hover:scale-[1.08]"
+        style={{ width: '16px', height: '16px' }}
       />
+
       <AnimatePresence>
         {!collapsed && (
           <motion.span
@@ -175,14 +258,20 @@ function NavItem({
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: -8 }}
             transition={{ duration: 0.2 }}
-            className="relative z-10 text-sm font-medium flex-1 min-w-0"
+            className="text-[13px] font-medium flex-1 min-w-0 leading-none"
           >
             {label}
           </motion.span>
         )}
       </AnimatePresence>
+
       {!collapsed && badge && (
-        <span className="relative z-10 text-[9px] font-bold px-1.5 py-0.5 rounded-full bg-[rgba(124,106,247,0.2)] text-[#7c6af7] border border-[rgba(124,106,247,0.3)] flex-shrink-0">
+        <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-full flex-shrink-0"
+          style={{
+            background: 'rgba(124,106,247,0.12)',
+            color: '#7c6af7',
+            border: '1px solid rgba(124,106,247,0.22)',
+          }}>
           {badge}
         </span>
       )}

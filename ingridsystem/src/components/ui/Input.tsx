@@ -13,14 +13,18 @@ export function Input({ label, error, icon, iconRight, helper, className, ...pro
   return (
     <div className="w-full">
       {label && (
-        <label className="block text-sm font-medium text-[#c8c0b4] mb-1.5">
-          {label}
-          {props.required && <span className="text-[#f87171] ml-1">*</span>}
+        <label className="block mb-1.5">
+          <span className="text-[12px] font-semibold uppercase tracking-[0.08em]"
+            style={{ color: 'rgba(138,147,168,0.75)' }}>
+            {label}
+          </span>
+          {props.required && <span className="text-[#f87171] ml-1 text-[11px]">*</span>}
         </label>
       )}
       <div className="relative">
         {icon && (
-          <div className="absolute left-3 top-1/2 -translate-y-1/2 text-[#8a93a8] pointer-events-none">
+          <div className="absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none"
+            style={{ color: 'rgba(138,147,168,0.6)' }}>
             {icon}
           </div>
         )}
@@ -28,20 +32,21 @@ export function Input({ label, error, icon, iconRight, helper, className, ...pro
           {...props}
           className={cn(
             'input-base',
-            icon && 'pl-10',
+            icon     && 'pl-10',
             iconRight && 'pr-10',
-            error && '!border-[rgba(248,113,113,0.5)] !shadow-[0_0_0_3px_rgba(248,113,113,0.08)]',
+            error    && '!border-[rgba(248,113,113,0.45)] !shadow-[0_0_0_3px_rgba(248,113,113,0.07)]',
             className
           )}
         />
         {iconRight && (
-          <div className="absolute right-3 top-1/2 -translate-y-1/2 text-[#8a93a8]">
+          <div className="absolute right-3 top-1/2 -translate-y-1/2"
+            style={{ color: 'rgba(138,147,168,0.6)' }}>
             {iconRight}
           </div>
         )}
       </div>
-      {error && <p className="text-xs text-[#f87171] mt-1">{error}</p>}
-      {helper && !error && <p className="text-xs text-[#8a93a8] mt-1">{helper}</p>}
+      {error  && <p className="text-[11px] mt-1.5" style={{ color: '#f87171' }}>{error}</p>}
+      {helper && !error && <p className="text-[11px] mt-1.5" style={{ color: 'rgba(138,147,168,0.6)' }}>{helper}</p>}
     </div>
   )
 }
@@ -56,21 +61,24 @@ export function Textarea({ label, error, helper, className, ...props }: Textarea
   return (
     <div className="w-full">
       {label && (
-        <label className="block text-sm font-medium text-[#c8c0b4] mb-1.5">
-          {label}
-          {props.required && <span className="text-[#f87171] ml-1">*</span>}
+        <label className="block mb-1.5">
+          <span className="text-[12px] font-semibold uppercase tracking-[0.08em]"
+            style={{ color: 'rgba(138,147,168,0.75)' }}>
+            {label}
+          </span>
+          {props.required && <span className="text-[#f87171] ml-1 text-[11px]">*</span>}
         </label>
       )}
       <textarea
         {...props}
         className={cn(
           'input-base resize-none',
-          error && '!border-[rgba(248,113,113,0.5)]',
+          error && '!border-[rgba(248,113,113,0.45)]',
           className
         )}
       />
-      {error && <p className="text-xs text-[#f87171] mt-1">{error}</p>}
-      {helper && !error && <p className="text-xs text-[#8a93a8] mt-1">{helper}</p>}
+      {error  && <p className="text-[11px] mt-1.5" style={{ color: '#f87171' }}>{error}</p>}
+      {helper && !error && <p className="text-[11px] mt-1.5" style={{ color: 'rgba(138,147,168,0.6)' }}>{helper}</p>}
     </div>
   )
 }
@@ -87,19 +95,27 @@ export function Select({ label, error, helper, options, placeholder, className, 
   return (
     <div className="w-full">
       {label && (
-        <label className="block text-sm font-medium text-[#c8c0b4] mb-1.5">
-          {label}
-          {props.required && <span className="text-[#f87171] ml-1">*</span>}
+        <label className="block mb-1.5">
+          <span className="text-[12px] font-semibold uppercase tracking-[0.08em]"
+            style={{ color: 'rgba(138,147,168,0.75)' }}>
+            {label}
+          </span>
+          {props.required && <span className="text-[#f87171] ml-1 text-[11px]">*</span>}
         </label>
       )}
       <select
         {...props}
         className={cn(
           'input-base appearance-none cursor-pointer',
-          error && '!border-[rgba(248,113,113,0.5)]',
+          error && '!border-[rgba(248,113,113,0.45)]',
           className
         )}
-        style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%238a93a8' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E")`, backgroundRepeat: 'no-repeat', backgroundPosition: 'right 12px center' }}
+        style={{
+          backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%236b7280' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E")`,
+          backgroundRepeat: 'no-repeat',
+          backgroundPosition: 'right 12px center',
+          paddingRight: '36px',
+        }}
       >
         {placeholder && <option value="">{placeholder}</option>}
         {options.map(opt => (
@@ -108,8 +124,8 @@ export function Select({ label, error, helper, options, placeholder, className, 
           </option>
         ))}
       </select>
-      {error && <p className="text-xs text-[#f87171] mt-1">{error}</p>}
-      {helper && !error && <p className="text-xs text-[#8a93a8] mt-1">{helper}</p>}
+      {error  && <p className="text-[11px] mt-1.5" style={{ color: '#f87171' }}>{error}</p>}
+      {helper && !error && <p className="text-[11px] mt-1.5" style={{ color: 'rgba(138,147,168,0.6)' }}>{helper}</p>}
     </div>
   )
 }

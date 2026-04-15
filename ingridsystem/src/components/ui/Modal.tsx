@@ -21,18 +21,12 @@ const sizes = {
 
 export function Modal({ open, onClose, title, children, size = 'md', subtitle }: ModalProps) {
   useEffect(() => {
-    if (open) {
-      document.body.style.overflow = 'hidden'
-    } else {
-      document.body.style.overflow = ''
-    }
+    document.body.style.overflow = open ? 'hidden' : ''
     return () => { document.body.style.overflow = '' }
   }, [open])
 
   useEffect(() => {
-    const handleEsc = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') onClose()
-    }
+    const handleEsc = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose() }
     if (open) window.addEventListener('keydown', handleEsc)
     return () => window.removeEventListener('keydown', handleEsc)
   }, [open, onClose])
@@ -41,48 +35,114 @@ export function Modal({ open, onClose, title, children, size = 'md', subtitle }:
     <AnimatePresence>
       {open && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+          {/* Backdrop */}
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.2 }}
-            className="absolute inset-0 bg-black/70 backdrop-blur-sm"
+            className="absolute inset-0"
+            style={{ background: 'rgba(3,5,12,0.78)', backdropFilter: 'blur(6px)' }}
             onClick={onClose}
           />
+
+          {/* Panel */}
           <motion.div
-            initial={{ opacity: 0, scale: 0.95, y: 10 }}
+            initial={{ opacity: 0, scale: 0.96, y: 12 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.95, y: 10 }}
-            transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
-            className={`relative w-full ${sizes[size]} bg-[#0d1424] border border-[#1a2540] rounded-2xl shadow-[0_24px_80px_rgba(0,0,0,0.8)] max-h-[90vh] flex flex-col`}
+            exit={{ opacity: 0, scale: 0.96, y: 8 }}
+            transition={{ duration: 0.28, ease: [0.16, 1, 0.3, 1] }}
+            className={`relative w-full ${sizes[size]} max-h-[90vh] flex flex-col`}
+            style={{
+              background: 'linear-gradient(160deg, #0d1424 0%, #090e1c 100%)',
+              border: '1px solid rgba(26,37,64,0.8)',
+              borderRadius: '18px',
+              boxShadow: '0 32px 96px rgba(0,0,0,0.85), 0 0 0 1px rgba(255,255,255,0.02) inset',
+            }}
           >
+            {/* Corner accent — top left */}
+            <div
+              className="absolute top-0 left-0 w-10 h-10 pointer-events-none rounded-tl-[18px] overflow-hidden"
+              style={{ borderTop: '1px solid rgba(232,168,124,0.18)', borderLeft: '1px solid rgba(232,168,124,0.18)' }}
+            />
+            {/* Corner accent — bottom right */}
+            <div
+              className="absolute bottom-0 right-0 w-10 h-10 pointer-events-none rounded-br-[18px] overflow-hidden"
+              style={{ borderBottom: '1px solid rgba(232,168,124,0.08)', borderRight: '1px solid rgba(232,168,124,0.08)' }}
+            />
+
+            {/* Ambient top glow */}
+            <div
+              className="absolute top-0 left-0 right-0 h-24 pointer-events-none rounded-t-[18px]"
+              style={{ background: 'radial-gradient(ellipse at 50% -40%, rgba(232,168,124,0.06) 0%, transparent 65%)' }}
+            />
+
+            {/* Header */}
             {(title || subtitle) && (
-              <div className="flex items-start justify-between p-6 pb-4 border-b border-[#1a2540] flex-shrink-0">
-                <div>
+              <div
+                className="flex items-start justify-between px-7 pt-6 pb-4 flex-shrink-0 relative"
+                style={{ borderBottom: '1px solid rgba(26,37,64,0.6)' }}
+              >
+                <div className="pr-4 min-w-0">
                   {title && (
-                    <h2 className="text-lg font-semibold text-[#f0ece4]">{title}</h2>
+                    <h2
+                      className="leading-tight tracking-tight"
+                      style={{
+                        fontFamily: "'Cormorant Garamond', serif",
+                        fontStyle: 'italic',
+                        fontWeight: 500,
+                        fontSize: '22px',
+                        color: '#f0ece4',
+                      }}
+                    >
+                      {title}
+                    </h2>
                   )}
                   {subtitle && (
-                    <p className="text-sm text-[#8a93a8] mt-0.5">{subtitle}</p>
+                    <p className="text-[12px] mt-1" style={{ color: '#4a5568' }}>
+                      {subtitle}
+                    </p>
                   )}
                 </div>
                 <button
                   onClick={onClose}
-                  className="w-8 h-8 rounded-lg flex items-center justify-center text-[#8a93a8] hover:text-[#f0ece4] hover:bg-[rgba(255,255,255,0.05)] transition-colors ml-4 flex-shrink-0"
+                  aria-label="Fechar"
+                  className="flex-shrink-0 flex items-center justify-center rounded-[9px] transition-all duration-200 mt-0.5"
+                  style={{ width: '32px', height: '32px', color: '#4a5568', border: '1px solid rgba(26,37,64,0.5)', background: 'transparent' }}
+                  onMouseEnter={e => {
+                    const el = e.currentTarget as HTMLElement
+                    el.style.color = '#f0ece4'
+                    el.style.background = 'rgba(255,255,255,0.05)'
+                    el.style.borderColor = 'rgba(26,37,64,0.9)'
+                  }}
+                  onMouseLeave={e => {
+                    const el = e.currentTarget as HTMLElement
+                    el.style.color = '#4a5568'
+                    el.style.background = 'transparent'
+                    el.style.borderColor = 'rgba(26,37,64,0.5)'
+                  }}
                 >
-                  <X className="w-4 h-4" />
+                  <X className="w-3.5 h-3.5" />
                 </button>
               </div>
             )}
+
+            {/* No-title close button */}
             {!title && (
               <button
                 onClick={onClose}
-                className="absolute top-4 right-4 w-8 h-8 rounded-lg flex items-center justify-center text-[#8a93a8] hover:text-[#f0ece4] hover:bg-[rgba(255,255,255,0.05)] transition-colors z-10"
+                aria-label="Fechar"
+                className="absolute top-5 right-5 flex items-center justify-center rounded-[9px] transition-all duration-200 z-10"
+                style={{ width: '32px', height: '32px', color: '#4a5568', border: '1px solid rgba(26,37,64,0.5)' }}
+                onMouseEnter={e => { (e.currentTarget as HTMLElement).style.color = '#f0ece4' }}
+                onMouseLeave={e => { (e.currentTarget as HTMLElement).style.color = '#4a5568' }}
               >
-                <X className="w-4 h-4" />
+                <X className="w-3.5 h-3.5" />
               </button>
             )}
-            <div className="overflow-y-auto flex-1 p-6">
+
+            {/* Content */}
+            <div className="overflow-y-auto flex-1 px-7 py-6">
               {children}
             </div>
           </motion.div>

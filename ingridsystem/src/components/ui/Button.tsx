@@ -18,17 +18,33 @@ interface ButtonProps {
 }
 
 const variants = {
-  primary: 'bg-[#e8a87c] hover:bg-[#d4916a] text-[#060912] font-semibold shadow-[0_0_20px_rgba(232,168,124,0.3)] hover:shadow-[0_0_30px_rgba(232,168,124,0.4)]',
-  secondary: 'bg-[#7c6af7] hover:bg-[#6a58e4] text-white font-semibold shadow-[0_0_20px_rgba(124,106,247,0.3)]',
-  ghost: 'bg-transparent hover:bg-[rgba(255,255,255,0.05)] text-[#8a93a8] hover:text-[#f0ece4] border border-transparent hover:border-[#1a2540]',
-  danger: 'bg-[rgba(248,113,113,0.15)] hover:bg-[rgba(248,113,113,0.25)] text-[#f87171] border border-[rgba(248,113,113,0.3)]',
-  outline: 'bg-transparent border border-[#1a2540] hover:border-[#e8a87c] text-[#f0ece4] hover:text-[#e8a87c]',
+  primary:
+    'btn-shimmer text-[#06090f] font-semibold ' +
+    'shadow-[0_0_24px_rgba(232,168,124,0.28),0_2px_8px_rgba(0,0,0,0.3)] ' +
+    'hover:shadow-[0_0_36px_rgba(232,168,124,0.4),0_2px_12px_rgba(0,0,0,0.35)]',
+  secondary:
+    'bg-[#7c6af7] hover:bg-[#6a58e4] text-white font-semibold ' +
+    'shadow-[0_0_20px_rgba(124,106,247,0.25)] hover:shadow-[0_0_30px_rgba(124,106,247,0.38)]',
+  ghost:
+    'bg-transparent text-[#8a93a8] hover:text-[#f0ece4] ' +
+    'border border-transparent hover:border-[rgba(26,37,64,0.8)] hover:bg-[rgba(255,255,255,0.04)]',
+  danger:
+    'bg-[rgba(248,113,113,0.1)] hover:bg-[rgba(248,113,113,0.18)] text-[#f87171] ' +
+    'border border-[rgba(248,113,113,0.28)] hover:border-[rgba(248,113,113,0.45)]',
+  outline:
+    'bg-transparent text-[#c8c0b4] hover:text-[#e8a87c] ' +
+    'border border-[rgba(26,37,64,0.9)] hover:border-[rgba(232,168,124,0.4)] ' +
+    'hover:bg-[rgba(232,168,124,0.04)]',
 }
 
 const sizes = {
-  sm: 'px-3 py-1.5 text-xs rounded-lg gap-1.5',
-  md: 'px-4 py-2.5 text-sm rounded-[10px] gap-2',
-  lg: 'px-6 py-3 text-base rounded-xl gap-2.5',
+  sm: 'px-3 py-1.5 text-xs rounded-[8px] gap-1.5 h-8',
+  md: 'px-4 py-2.5 text-[13px] rounded-[10px] gap-2 h-9',
+  lg: 'px-6 py-3 text-sm rounded-[11px] gap-2.5 h-11',
+}
+
+const primaryBg = {
+  background: 'linear-gradient(135deg, #ebb98a 0%, #e8a87c 40%, #d4916a 100%)',
 }
 
 export function Button({
@@ -41,8 +57,9 @@ export function Button({
       onClick={onClick}
       disabled={disabled || loading}
       whileTap={{ scale: 0.97 }}
-      whileHover={{ scale: 1.01 }}
-      transition={{ duration: 0.15 }}
+      whileHover={!(disabled || loading) ? { scale: 1.01 } : undefined}
+      transition={{ duration: 0.13 }}
+      style={variant === 'primary' ? primaryBg : undefined}
       className={cn(
         'relative inline-flex items-center justify-center transition-all duration-200 select-none cursor-pointer',
         'disabled:opacity-40 disabled:cursor-not-allowed disabled:pointer-events-none',
@@ -53,11 +70,11 @@ export function Button({
       )}
     >
       {loading ? (
-        <Loader2 className="w-4 h-4 animate-spin" />
+        <Loader2 className="w-3.5 h-3.5 animate-spin" />
       ) : (
         icon && <span className="flex-shrink-0">{icon}</span>
       )}
-      <span>{children}</span>
+      <span className="leading-none">{children}</span>
       {iconRight && !loading && <span className="flex-shrink-0">{iconRight}</span>}
     </motion.button>
   )
